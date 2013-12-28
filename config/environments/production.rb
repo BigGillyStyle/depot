@@ -77,4 +77,7 @@ Depot::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  require 'active_support/core_ext/numeric/bytes'
+  config.logger = Logger.new(paths['log'].first, 2, 10.megabytes)
 end

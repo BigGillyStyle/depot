@@ -2,6 +2,7 @@ class OrdersController < ApplicationController
   include CurrentCart
   before_action :set_cart, only: [:new, :create]
   before_action :set_order, only: [:show, :edit, :update, :destroy]
+  skip_before_action :authorize, only: [:new, :create]
 
   # GET /orders
   # GET /orders.json
@@ -39,11 +40,14 @@ class OrdersController < ApplicationController
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
         OrderNotifier.received(@order).deliver
-        format.html { redirect_to store_url, notice: 'Thank you for your order.' }
-        format.json { render action: 'show', status: :created, location: @order }
+        format.html { redirect_to store_url, notice: 
+          I18n.t('.thanks') }
+        format.json { render action: 'show', status: :created,
+          location: @order }
       else
         format.html { render action: 'new' }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
+        format.json { render json: @order.errors,
+          status: :unprocessable_entity }
       end
     end
   end
